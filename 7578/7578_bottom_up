@@ -1,0 +1,49 @@
+#include<stdio.h>
+#include<set>
+using namespace std;
+#define N 500001
+#define SZN 524288
+typedef long long int ll;
+int n, A[N], B[N], ord[1000001];
+int ind[SZN * 2];
+int pluss(int s, int e) {
+	int ans = 0;
+	while (s <= e) {
+		if (s % 2 == 1) {
+			ans += ind[s];
+			s++;
+		}
+		if (e % 2 == 0) {
+			ans += ind[e];
+			e--;
+		}
+		s /= 2, e /= 2;
+	}
+	return ans;
+}
+void rnk(int x) {
+	ind[x]++;
+	if (x == 1) { return; }
+	rnk(x / 2);
+}
+int main() {
+	int n, i, nn = 0;
+	ll ans = (ll)0;
+	scanf("%d", &n);
+	for (nn = 1; nn < n; nn *= 2);
+	for (i = 1; i <= n; i++) {
+		scanf("%d", &A[i]);
+		ord[A[i]] = i;
+	}
+	for (i = 1; i <= n; i++) {
+		scanf("%d", &B[i]);
+	}
+	for (i = 1; i <= n; i++) {
+		A[i] = ord[A[i]], B[i] = ord[B[i]];
+	}
+	for (i = 1; i <= n; i++) {
+		ans += (ll)pluss(B[i] + nn, n + nn - 1);
+		rnk(B[i] + nn - 1);
+	}
+	printf("%lld", ans);
+}
